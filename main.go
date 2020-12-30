@@ -21,11 +21,6 @@ func main() {
 
 	objects := []entities.BaseEntity{}
 
-	input := []int{}
-	time := sdl.GetTicks()
-	count := 0
-	secondTimer := float32(0)
-
 	player := &entities.Player{
 		X:          300,
 		Y:          400,
@@ -71,13 +66,18 @@ func main() {
 	}
 	defer buffer.Destroy()
 
+	input := []int{}
+	time := sdl.GetTicks()
+	count := 0
+	secondTimer := float32(0)
+
 	// Main loop
 	for {
 		// Update timing
 		newTime := sdl.GetTicks()
-		delta := float32(newTime - time)
+		common.Delta = float32(newTime - time)
 		time = newTime
-		secondTimer += delta
+		secondTimer += common.Delta
 
 		// Input
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -94,10 +94,10 @@ func main() {
 			canJump = true
 		}
 		if contains(input, sdl.SCANCODE_RIGHT) {
-			player.X += 0.7 * delta
+			player.X += 0.7 * common.Delta
 		}
 		if contains(input, sdl.SCANCODE_LEFT) {
-			player.X -= 0.7 * delta
+			player.X -= 0.7 * common.Delta
 		}
 		if contains(input, sdl.SCANCODE_SPACE) && canJump {
 			player.YVelocity = -2
@@ -105,16 +105,14 @@ func main() {
 		}
 
 		// Physic
-		player.Y += player.YVelocity * delta
-		player.YVelocity += 0.01 * delta
+		player.Y += player.YVelocity * common.Delta
+		player.YVelocity += 0.01 * common.Delta
 
 		// Collision
 		player.IsGrounded = false
 		for _, e := range objects {
 			dir := collision.GetCollisionDirection(*player, e)
-			if dir != common.NONE {
-				e.OnCollision(player, dir)
-			}
+			e.OnCollision(player, dir)
 		}
 
 		// Render

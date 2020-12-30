@@ -6,22 +6,38 @@ import (
 
 // Ground ...
 type Ground struct {
-	X      float32
-	Y      float32
-	Width  float32
-	Height float32
+	X               float32
+	Y               float32
+	Width           float32
+	Height          float32
+	CollisionTimers []float32
 }
 
 // OnCollision ...
-func (g Ground) OnCollision(p *Player, dir common.Direction) {
+func (g *Ground) OnCollision(p *Player, dir common.Direction) {
+
+	// Reset collision timers
+	if len(g.CollisionTimers) == 0 || dir == common.NONE {
+		g.ClearCollisionTimers()
+	}
+
+	// Count current collision time
+	if dir != common.NONE {
+		g.CollisionTimers[dir-1] += common.Delta
+	}
+
 	switch dir {
 	case common.UP:
-		p.YVelocity = 0
-		p.Y = g.Y - p.Height - 1
-		p.IsGrounded = true
+		if g.CollisionTimers[0] > 5 {
+			p.YVelocity = 0
+			p.Y = g.Y - p.Height
+			p.IsGrounded = true
+		}
 	case common.DOWN:
-		p.YVelocity = 0
-		p.Y = g.Y + g.Height + 1
+		if g.CollisionTimers[1] > 5 {
+			p.YVelocity = 0
+			p.Y = g.Y + g.Height + 1
+		}
 	case common.LEFT:
 		p.XVelocity = 0
 		p.X = g.X - p.Width
@@ -30,6 +46,11 @@ func (g Ground) OnCollision(p *Player, dir common.Direction) {
 		p.X = g.X + g.Width
 	default:
 	}
+}
+
+// ClearCollisionTimers ...
+func (g *Ground) ClearCollisionTimers() {
+	g.CollisionTimers = []float32{0.0, 0.0, 0.0, 0.0}
 }
 
 // GetX ...

@@ -11,3 +11,6 @@ const (
 	LEFT
 	RIGHT
 )
+
+// Delta ...
+var Delta float32
