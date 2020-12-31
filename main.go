@@ -6,7 +6,9 @@ import (
 
 	"red_zenith/collision"
 	"red_zenith/common"
+	"red_zenith/controller"
 	"red_zenith/entities"
+	"red_zenith/environment"
 	"strconv"
 )
 
@@ -16,8 +18,6 @@ var height int32
 func main() {
 	width = 1000
 	height = 700
-
-	canJump := false
 
 	objects := []entities.BaseEntity{}
 
@@ -29,6 +29,14 @@ func main() {
 		YVelocity:  0,
 		XVelocity:  0,
 		IsGrounded: false,
+		CanJump:    false,
+	}
+
+	controller := &controller.PlayerController{}
+
+	environment := &environment.Environment{
+		Gravity:         0.01,
+		MaxFallingSpeed: 1.5,
 	}
 
 	e1 := &entities.Ground{
@@ -90,23 +98,10 @@ func main() {
 		}
 
 		// Controls
-		if !canJump && player.IsGrounded && !contains(input, sdl.SCANCODE_SPACE) {
-			canJump = true
-		}
-		if contains(input, sdl.SCANCODE_RIGHT) {
-			player.X += 0.7 * common.Delta
-		}
-		if contains(input, sdl.SCANCODE_LEFT) {
-			player.X -= 0.7 * common.Delta
-		}
-		if contains(input, sdl.SCANCODE_SPACE) && canJump {
-			player.YVelocity = -2
-			canJump = false
-		}
+		controller.Control(player, input)
 
-		// Physic
-		player.Y += player.YVelocity * common.Delta
-		player.YVelocity += 0.01 * common.Delta
+		// Physics
+		environment.Update(player)
 
 		// Collision
 		player.IsGrounded = false
@@ -139,9 +134,9 @@ func main() {
 func keyboardPressed(e *sdl.KeyboardEvent, input []int) []int {
 	var scancode = int(e.Keysym.Scancode)
 
-	if e.Type == sdl.KEYDOWN && !contains(input, scancode) {
+	if e.Type == sdl.KEYDOWN && !common.Contains(input, scancode) {
 		input = append(input, scancode)
-	} else if e.Type == sdl.KEYUP && contains(input, scancode) {
+	} else if e.Type == sdl.KEYUP && common.Contains(input, scancode) {
 		input = remove(input, scancode)
 	}
 
@@ -187,13 +182,4 @@ func indexOf(s []int, e int) int {
 		}
 	}
 	return -1
-}
-
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
 }

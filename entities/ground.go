@@ -26,25 +26,23 @@ func (g *Ground) OnCollision(p *Player, dir common.Direction) {
 		g.CollisionTimers[dir-1] += common.Delta
 	}
 
-	switch dir {
-	case common.UP:
-		if g.CollisionTimers[0] > 5 {
+	if dir != common.NONE && g.CollisionTimers[dir-1] > 5 {
+		switch dir {
+		case common.UP:
 			p.YVelocity = 0
 			p.Y = g.Y - p.Height
 			p.IsGrounded = true
-		}
-	case common.DOWN:
-		if g.CollisionTimers[1] > 5 {
+		case common.DOWN:
 			p.YVelocity = 0
 			p.Y = g.Y + g.Height + 1
+		case common.LEFT:
+			p.XVelocity = 0
+			p.X = g.X - p.Width
+		case common.RIGHT:
+			p.XVelocity = 0
+			p.X = g.X + g.Width
+		default:
 		}
-	case common.LEFT:
-		p.XVelocity = 0
-		p.X = g.X - p.Width
-	case common.RIGHT:
-		p.XVelocity = 0
-		p.X = g.X + g.Width
-	default:
 	}
 }
 

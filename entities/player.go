@@ -9,4 +9,5 @@ type Player struct {
 	XVelocity  float32
 	YVelocity  float32
 	IsGrounded bool
+	CanJump    bool
 }
