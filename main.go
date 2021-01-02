@@ -21,15 +21,22 @@ func main() {
 
 	objects := []entities.BaseEntity{}
 
+	hookShot := &entities.HookShot{
+		EndPoint:   common.Point{X: 0, Y: 0},
+		StartPoint: common.Point{X: 0, Y: 0},
+		Angle:      3.14,
+		Objects:    &objects,
+	}
 	player := &entities.Player{
 		X:          300,
 		Y:          400,
-		Width:      20,
-		Height:     20,
+		Width:      32,
+		Height:     32,
 		YVelocity:  0,
 		XVelocity:  0,
 		IsGrounded: false,
 		CanJump:    false,
+		Item:       hookShot,
 	}
 
 	controller := &controller.PlayerController{}
@@ -113,12 +120,11 @@ func main() {
 		// Render
 		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.Clear()
-		renderer.SetDrawColor(255, 255, 0, 255)
-		renderer.FillRect(&sdl.Rect{X: int32(player.X), Y: int32(player.Y), W: int32(player.Width), H: int32(player.Height)})
 		renderer.SetDrawColor(255, 0, 0, 255)
 		for _, e := range objects {
 			renderer.FillRect(&sdl.Rect{X: int32(e.GetX()), Y: int32(e.GetY()), W: int32(e.GetWidth()), H: int32(e.GetHeight())})
 		}
+		player.Render(renderer)
 		renderer.Present()
 
 		// FPS counter
