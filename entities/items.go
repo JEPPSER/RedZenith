@@ -60,8 +60,8 @@ func (h *HookShot) Update(input []int, p *Player) {
 			h.shotDuration = 0
 		}
 	} else {
-		h.EndPoint.X = x + h.shotDuration*float32(math.Sin(float64(h.Angle)))
-		h.EndPoint.Y = y + h.shotDuration*float32(math.Cos(float64(h.Angle)))
+		h.EndPoint.X = x + h.shotDuration*1.5*float32(math.Sin(float64(h.Angle)))
+		h.EndPoint.Y = y + h.shotDuration*1.5*float32(math.Cos(float64(h.Angle)))
 
 		if h.isConnected() {
 			p.XVelocity = float32(math.Sin(float64(h.Angle))) * 3
@@ -69,7 +69,7 @@ func (h *HookShot) Update(input []int, p *Player) {
 			h.isShooting = false
 			h.shotDuration = 0
 		} else {
-			if h.shotDuration > 500 {
+			if h.shotDuration > 300 {
 				h.isShooting = false
 			} else {
 				h.shotDuration += common.Delta

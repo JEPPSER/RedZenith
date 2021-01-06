@@ -43,15 +43,15 @@ func parseLevelString(data string) (objects []entities.BaseEntity, spawnPoint co
 	}
 	left := &entities.Ground{
 		X:      -50,
-		Y:      0,
+		Y:      -50,
 		Width:  50,
-		Height: float32(height),
+		Height: float32(height) + 100,
 	}
 	right := &entities.Ground{
 		X:      float32(width),
-		Y:      0,
+		Y:      -50,
 		Width:  50,
-		Height: float32(height),
+		Height: float32(height) + 100,
 	}
 	objects = append(objects, ceil, floor, left, right)
 
