@@ -1,5 +1,9 @@
 package common
 
+import (
+	"github.com/veandco/go-sdl2/sdl"
+)
+
 // Direction ...
 type Direction int
 
@@ -11,6 +15,12 @@ const (
 	LEFT
 	RIGHT
 )
+
+// PlayerImage ...
+var PlayerImage *sdl.Texture
+
+// PlayerOverlayImage ...
+var PlayerOverlayImage *sdl.Texture
 
 // Delta ...
 var Delta float32

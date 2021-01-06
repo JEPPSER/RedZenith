@@ -12,9 +12,9 @@ type UsableItem interface {
 	Render(renderer *sdl.Renderer, offsetX float32, offsetY float32)
 }
 
-const useKey = sdl.SCANCODE_A
+const useKey = sdl.SCANCODE_D
 const aimRightKey = sdl.SCANCODE_S
-const aimLeftKey = sdl.SCANCODE_D
+const aimLeftKey = sdl.SCANCODE_A
 
 // HookShot ...
 type HookShot struct {
@@ -45,9 +45,9 @@ func (h *HookShot) Update(input []int, p *Player) {
 	}
 
 	if !h.isShooting {
-		if common.Contains(input, aimRightKey) {
+		if common.Contains(input, aimLeftKey) {
 			h.Angle += 0.005 * common.Delta
-		} else if common.Contains(input, aimLeftKey) {
+		} else if common.Contains(input, aimRightKey) {
 			h.Angle -= 0.005 * common.Delta
 		}
 

@@ -59,11 +59,8 @@ func main() {
 	defer window.Destroy()
 	defer renderer.Destroy()
 
-	buffer, err := renderer.CreateTexture(sdl.PIXELFORMAT_RGBA8888, sdl.TEXTUREACCESS_STREAMING, width, height)
-	if err != nil {
-		panic(err)
-	}
-	defer buffer.Destroy()
+	common.PlayerImage = loadImage(renderer, "res/player.bmp")
+	common.PlayerOverlayImage = loadImage(renderer, "res/player_overlay.bmp")
 
 	input := []int{}
 	time := sdl.GetTicks()
@@ -165,4 +162,13 @@ func indexOf(s []int, e int) int {
 		}
 	}
 	return -1
+}
+
+func loadImage(renderer *sdl.Renderer, path string) *sdl.Texture {
+	img, err := sdl.LoadBMP(path)
+	tex, err := renderer.CreateTextureFromSurface(img)
+	if err != nil {
+		panic(err)
+	}
+	return tex
 }
