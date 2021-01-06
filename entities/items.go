@@ -9,7 +9,7 @@ import (
 // UsableItem ...
 type UsableItem interface {
 	Update(input []int, p *Player)
-	Render(renderer *sdl.Renderer)
+	Render(renderer *sdl.Renderer, offsetX float32, offsetY float32)
 }
 
 const useKey = sdl.SCANCODE_A
@@ -58,6 +58,7 @@ func (h *HookShot) Update(input []int, p *Player) {
 			p.XVelocity = float32(math.Sin(float64(h.Angle))) * 3
 			p.YVelocity = float32(math.Cos(float64(h.Angle))) * 3
 			h.isShooting = false
+			h.shotDuration = 0
 		} else {
 			if h.shotDuration > 500 {
 				h.isShooting = false
@@ -69,9 +70,9 @@ func (h *HookShot) Update(input []int, p *Player) {
 }
 
 // Render ...
-func (h HookShot) Render(renderer *sdl.Renderer) {
+func (h HookShot) Render(renderer *sdl.Renderer, offsetX float32, offsetY float32) {
 	renderer.SetDrawColor(0, 255, 0, 255)
-	renderer.DrawLine(int32(h.StartPoint.X), int32(h.StartPoint.Y), int32(h.EndPoint.X), int32(h.EndPoint.Y))
+	renderer.DrawLine(int32(h.StartPoint.X-offsetX), int32(h.StartPoint.Y-offsetY), int32(h.EndPoint.X-offsetX), int32(h.EndPoint.Y-offsetY))
 }
 
 func (h HookShot) isConnected() bool {

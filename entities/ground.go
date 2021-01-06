@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/veandco/go-sdl2/sdl"
 	"red_zenith/common"
 )
 
@@ -11,6 +12,12 @@ type Ground struct {
 	Width           float32
 	Height          float32
 	CollisionTimers []float32
+}
+
+// Render ...
+func (g Ground) Render(renderer *sdl.Renderer, offsetX float32, offsetY float32) {
+	renderer.SetDrawColor(255, 0, 0, 255)
+	renderer.FillRect(&sdl.Rect{X: int32(g.X - offsetX), Y: int32(g.Y - offsetY), W: int32(g.Width), H: int32(g.Height)})
 }
 
 // OnCollision ...
@@ -26,7 +33,7 @@ func (g *Ground) OnCollision(p *Player, dir common.Direction) {
 		g.CollisionTimers[dir-1] += common.Delta
 	}
 
-	if dir != common.NONE && g.CollisionTimers[dir-1] > 5 {
+	if dir != common.NONE && g.CollisionTimers[dir-1] > 3 {
 		switch dir {
 		case common.UP:
 			p.YVelocity = 0

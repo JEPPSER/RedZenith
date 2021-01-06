@@ -25,6 +25,16 @@ func Contains(s []int, e int) bool {
 	return false
 }
 
+// ClampF32 ...
+func ClampF32(val float32, min float32, max float32) float32 {
+	if val < min {
+		return min
+	} else if val > max {
+		return max
+	}
+	return val
+}
+
 // Point ...
 type Point struct {
 	X float32

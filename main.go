@@ -4,6 +4,7 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 	"github.com/veandco/go-sdl2/ttf"
 
+	"red_zenith/camera"
 	"red_zenith/collision"
 	"red_zenith/common"
 	"red_zenith/controller"
@@ -16,8 +17,8 @@ var width int32
 var height int32
 
 func main() {
-	width = 1000
-	height = 700
+	width = 1280
+	height = 720
 
 	objects := []entities.BaseEntity{}
 
@@ -39,6 +40,13 @@ func main() {
 		Item:       hookShot,
 	}
 
+	camera := &camera.Camera{
+		OffsetX: 0,
+		OffsetY: 0,
+		Player:  player,
+		Objects: &objects,
+	}
+
 	controller := &controller.PlayerController{}
 
 	environment := &environment.Environment{
@@ -47,9 +55,9 @@ func main() {
 	}
 
 	e1 := &entities.Ground{
-		X:      200,
+		X:      0,
 		Y:      610,
-		Width:  600,
+		Width:  1280,
 		Height: 50,
 	}
 
@@ -67,9 +75,17 @@ func main() {
 		Height: 100,
 	}
 
+	e4 := &entities.Ground{
+		X:      700,
+		Y:      100,
+		Width:  50,
+		Height: 100,
+	}
+
 	objects = append(objects, e1)
 	objects = append(objects, e2)
 	objects = append(objects, e3)
+	objects = append(objects, e4)
 
 	window, renderer := initSDL()
 	defer window.Destroy()
@@ -118,14 +134,7 @@ func main() {
 		}
 
 		// Render
-		renderer.SetDrawColor(0, 0, 0, 255)
-		renderer.Clear()
-		renderer.SetDrawColor(255, 0, 0, 255)
-		for _, e := range objects {
-			renderer.FillRect(&sdl.Rect{X: int32(e.GetX()), Y: int32(e.GetY()), W: int32(e.GetWidth()), H: int32(e.GetHeight())})
-		}
-		player.Render(renderer)
-		renderer.Present()
+		camera.Render(renderer)
 
 		// FPS counter
 		count++
