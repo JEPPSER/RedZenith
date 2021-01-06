@@ -10,6 +10,7 @@ import (
 	"red_zenith/controller"
 	"red_zenith/entities"
 	"red_zenith/environment"
+	"red_zenith/level"
 	"strconv"
 )
 
@@ -20,7 +21,7 @@ func main() {
 	width = 1280
 	height = 720
 
-	objects := []entities.BaseEntity{}
+	objects, spawnPoint := level.GetLevel("level.rz")
 
 	hookShot := &entities.HookShot{
 		EndPoint:   common.Point{X: 0, Y: 0},
@@ -29,8 +30,8 @@ func main() {
 		Objects:    &objects,
 	}
 	player := &entities.Player{
-		X:          300,
-		Y:          400,
+		X:          spawnPoint.X,
+		Y:          spawnPoint.Y,
 		Width:      32,
 		Height:     32,
 		YVelocity:  0,
@@ -53,39 +54,6 @@ func main() {
 		Gravity:         0.01,
 		MaxFallingSpeed: 1.5,
 	}
-
-	e1 := &entities.Ground{
-		X:      0,
-		Y:      610,
-		Width:  1280,
-		Height: 50,
-	}
-
-	e2 := &entities.Ground{
-		X:      500,
-		Y:      350,
-		Width:  50,
-		Height: 200,
-	}
-
-	e3 := &entities.Ground{
-		X:      700,
-		Y:      500,
-		Width:  50,
-		Height: 100,
-	}
-
-	e4 := &entities.Ground{
-		X:      700,
-		Y:      100,
-		Width:  50,
-		Height: 100,
-	}
-
-	objects = append(objects, e1)
-	objects = append(objects, e2)
-	objects = append(objects, e3)
-	objects = append(objects, e4)
 
 	window, renderer := initSDL()
 	defer window.Destroy()

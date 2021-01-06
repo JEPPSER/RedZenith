@@ -20,6 +20,8 @@ const aimLeftKey = sdl.SCANCODE_D
 type HookShot struct {
 	isShooting   bool
 	shotDuration float32
+	canShoot     bool
+	shotCooldown float32
 
 	Angle      float32
 	EndPoint   common.Point
@@ -31,26 +33,33 @@ type HookShot struct {
 func (h *HookShot) Update(input []int, p *Player) {
 	x := p.X + p.Width/2.0
 	y := p.Y + p.Height/2.0
+	h.StartPoint.X = x
+	h.StartPoint.Y = y
+
+	if !h.canShoot {
+		if !common.Contains(input, useKey) && h.shotCooldown > 1000 {
+			h.canShoot = true
+			h.shotCooldown = 0
+		}
+		h.shotCooldown += common.Delta
+	}
+
 	if !h.isShooting {
 		if common.Contains(input, aimRightKey) {
 			h.Angle += 0.005 * common.Delta
 		} else if common.Contains(input, aimLeftKey) {
 			h.Angle -= 0.005 * common.Delta
 		}
-	}
 
-	h.StartPoint.X = x
-	h.StartPoint.Y = y
-	if !h.isShooting {
 		h.EndPoint.X = x + float32(50*math.Sin(float64(h.Angle)))
 		h.EndPoint.Y = y + float32(50*math.Cos(float64(h.Angle)))
-	}
-	if !h.isShooting && common.Contains(input, useKey) {
-		h.isShooting = true
-		h.shotDuration = 0
-	}
 
-	if h.isShooting {
+		if h.canShoot && common.Contains(input, useKey) {
+			h.isShooting = true
+			h.canShoot = false
+			h.shotDuration = 0
+		}
+	} else {
 		h.EndPoint.X = x + h.shotDuration*float32(math.Sin(float64(h.Angle)))
 		h.EndPoint.Y = y + h.shotDuration*float32(math.Cos(float64(h.Angle)))
 
