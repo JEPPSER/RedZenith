@@ -22,9 +22,9 @@ func parseLevelString(data string) (objects []entities.BaseEntity, spawnPoint co
 	data = strings.ReplaceAll(data, "\r", "")
 	lines := strings.Split(data, "\n")
 
-	size := strings.Split(lines[0], ",")
-	width, err := strconv.ParseInt(size[0], 10, 32)
-	height, err := strconv.ParseInt(size[1], 10, 32)
+	size := strings.Split(lines[1], ",")
+	width, err := strconv.ParseFloat(size[0], 32)
+	height, err := strconv.ParseFloat(size[1], 32)
 	if err != nil {
 		panic(err)
 	}
@@ -55,16 +55,16 @@ func parseLevelString(data string) (objects []entities.BaseEntity, spawnPoint co
 	}
 	objects = append(objects, ceil, floor, left, right)
 
-	for i := 2; i < len(lines); i++ {
+	for i := 4; i < len(lines); i++ {
 		e := parseEntity(lines[i])
 		if e != nil {
 			objects = append(objects, e)
 		}
 	}
 
-	parts := strings.Split(lines[1], ",")
-	x, err := strconv.ParseInt(parts[0], 10, 32)
-	y, err := strconv.ParseInt(parts[1], 10, 32)
+	parts := strings.Split(lines[2], ",")
+	x, err := strconv.ParseFloat(parts[0], 32)
+	y, err := strconv.ParseFloat(parts[1], 32)
 	handleError(err)
 	spawnPoint = common.Point{
 		X: float32(x),
@@ -75,19 +75,22 @@ func parseLevelString(data string) (objects []entities.BaseEntity, spawnPoint co
 }
 
 func parseEntity(str string) entities.BaseEntity {
-	parts := strings.Split(str, ",")
+	if str == "" {
+		return nil
+	}
 
+	parts := strings.Split(str, ",")
 	var result entities.BaseEntity = nil
 
 	id, err := strconv.ParseInt(parts[0], 10, 32)
-	x, err := strconv.ParseInt(parts[1], 10, 32)
-	y, err := strconv.ParseInt(parts[2], 10, 32)
+	x, err := strconv.ParseFloat(parts[1], 32)
+	y, err := strconv.ParseFloat(parts[2], 32)
 	handleError(err)
 
 	switch id {
-	case 1:
-		width, err := strconv.ParseInt(parts[3], 10, 32)
-		height, err := strconv.ParseInt(parts[4], 10, 32)
+	case 0:
+		width, err := strconv.ParseFloat(parts[3], 32)
+		height, err := strconv.ParseFloat(parts[4], 32)
 		handleError(err)
 		result = &entities.Ground{
 			X:      float32(x),
