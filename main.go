@@ -61,6 +61,8 @@ func main() {
 
 	common.PlayerImage = loadImage(renderer, "res/player.bmp")
 	common.PlayerOverlayImage = loadImage(renderer, "res/player_overlay.bmp")
+	common.HookshotChain = loadImage(renderer, "res/hookshot_chain.bmp")
+	common.HookshotHead = loadImage(renderer, "res/hookshot_head.bmp")
 
 	input := []int{}
 	time := sdl.GetTicks()
